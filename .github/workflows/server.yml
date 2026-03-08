@@ -9,15 +9,16 @@ jobs:
 
     steps:
       - name: Install Java
-        run: sudo apt update && sudo apt install openjdk-17-jdk -y
+        run: sudo apt update && sudo apt install openjdk-17-jdk jq -y
 
       - name: Download Paper
-  run: |
-    VERSION=$(curl -s https://api.papermc.io/v2/projects/paper | jq -r '.versions[-1]')
-    BUILD=$(curl -s https://api.papermc.io/v2/projects/paper/versions/$VERSION | jq -r '.builds[-1]')
-    wget https://api.papermc.io/v2/projects/paper/versions/$VERSION/builds/$BUILD/downloads/paper-$VERSION-$BUILD.jar -O paper.jar
+        run: |
+          VERSION=$(curl -s https://api.papermc.io/v2/projects/paper | jq -r '.versions[-1]')
+          BUILD=$(curl -s https://api.papermc.io/v2/projects/paper/versions/$VERSION | jq -r '.builds[-1]')
+          wget https://api.papermc.io/v2/projects/paper/versions/$VERSION/builds/$BUILD/downloads/paper-$VERSION-$BUILD.jar -O paper.jar
+
       - name: Accept EULA
         run: echo "eula=true" > eula.txt
 
-      - name: Start Minecraft Server
+      - name: Start Server
         run: java -Xmx4G -Xms2G -jar paper.jar nogui
